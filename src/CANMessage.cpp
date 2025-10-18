@@ -50,6 +50,43 @@ bool CANMessage<MESSAGE_ARRAY_LEN>::sendIfReady(mcp2515_can CANInterface){     /
     }
 }
 
+template <int MESSAGE_ARRAY_LEN>
+bool CANMessage<MESSAGE_ARRAY_LEN>::sendMessage(){     // Method to send the message and update the lastSentTimestamp. Calling without arguments will output to Serial.
+    outputToSerial(HEX, HEX);
+    updateTimestamp();
+    return true;
+}
+
+template <int MESSAGE_ARRAY_LEN>
+bool CANMessage<MESSAGE_ARRAY_LEN>::sendIfReady(){     // Integrated method to check the timestamp, send if ready, update the timestamp. Calling without arguments will output to Serial.
+    if(shouldSend()){
+        sendMessage();
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+template <int MESSAGE_ARRAY_LEN>
+bool CANMessage<MESSAGE_ARRAY_LEN>::outputToSerial(int idFormat = HEX, int dataFormat = HEX){     // Method output to Serial, takes arguments for displayed format of id and data
+    if(idFormat != BIN || idFormat != OCT || idFormat != DEC || idFormat != HEX){
+        return false;
+    }
+    if(dataFormat != BIN || dataFormat != OCT || dataFormat != DEC || dataFormat != HEX){
+        return false;
+    }
+    Serial.print(CANID, idFormat);
+    for(int i = 0; i <= messageLength; i++){
+        Serial.print(" ");
+        Serial.print(message[i], dataFormat);
+    }
+    Serial.println();
+    return true;
+}
+
+
+
 template class CANMessage<1>;
 template class CANMessage<2>;
 template class CANMessage<3>;

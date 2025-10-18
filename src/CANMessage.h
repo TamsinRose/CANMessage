@@ -12,8 +12,8 @@ class CANMessage{
         int CANID;                                      // The CAN ID of the message
         int messageLength;                              // The length (number of bytes) of the CAN message
         unsigned char message[MESSAGE_ARRAY_LEN];       // the array which will hold the CAN message, length determined at construct
-        int sendingFrequency;                           // Sending frequency in millisenconds - how often the frame should be sent
-        int lastSentTimestamp;                          // Variable to store the timestamp when the CAN message was last sent
+        unsigned long sendingFrequency;                 // Sending frequency in millisenconds - how often the frame should be sent
+        unsigned long lastSentTimestamp;                // Variable to store the timestamp when the CAN message was last sent
 
         CANMessage(int id, int freq);                   // Constructor, set the CAN ID and sending frequency. Message length determined from Template value MESSAGE_ARRAY_LEN
 
@@ -25,6 +25,11 @@ class CANMessage{
 
         bool sendIfReady(mcp2515_can CANInterface);     // Integrated method to check the timestamp, send if ready, update the timestamp
 
-};
+        bool sendMessage();                             // Method to send the message and update the lastSentTimestamp, calling without arguments will output to Serial
+
+        bool sendIfReady();                             // Integrated method to check the timestamp, send if ready, update the timestamp. Calling without arguments will output to Serial
+    
+        bool outputToSerial(int idFormat, int dataFormat);        // Method to output to Serial
+    };
 
 #endif //CAN_MESSAGE_HEADER_FILE
