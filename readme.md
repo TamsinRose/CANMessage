@@ -15,7 +15,7 @@ lastSentTimestamp: the timestamp millis() when this message was last sent
 
 Public Methods:
 shouldSend(): compares the lastSentTimestamp to current millis(), returns true if greater than the sendingFrequency
-sendIfReady(): all in one method to send the message if ready (sending interval has elapsed since it was last sent. Calling without arguments will log to serial port, or can accept an instance of mcp2515_can CAN interface to send on. Updates the lastSentTimestamp.
+sendIfReady(): all in one method to send the message if ready sendingFrequency has elapsed since it was last sent. Calling without arguments will log to serial port, or can accept an instance of mcp2515_can CAN interface to send on. Updates the lastSentTimestamp.
 sendMessage: sends the message, Calling without arguments will log to serial port, or can accept an instance of mcp2515_can CAN interface to send on. Updates the lastSentTimestamp.
 outputToSerial(int idFormat = HEX, int dataFormat = HEX): log the message to an open serial output. Formating of the ID and message data are customiseable. Calling this method does not update the lastSentTimestamp.
 updateTimestamp: updates the lastSentTimestamp to current value of millis().
