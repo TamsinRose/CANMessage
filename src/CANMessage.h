@@ -29,7 +29,7 @@ class CANMessage{
 
         bool sendIfReady();                             // Integrated method to check the timestamp, send if ready, update the timestamp. Calling without arguments will output to Serial
     
-        bool outputToSerial(int idFormat, int dataFormat);        // Method to output to Serial
+        bool outputToSerial(int idFormat = HEX, int dataFormat = HEX);        // Method to output to Serial
     };
 
 #endif //CAN_MESSAGE_HEADER_FILE

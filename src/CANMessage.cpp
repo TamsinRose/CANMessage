@@ -52,7 +52,7 @@ bool CANMessage<MESSAGE_ARRAY_LEN>::sendIfReady(mcp2515_can CANInterface){     /
 
 template <int MESSAGE_ARRAY_LEN>
 bool CANMessage<MESSAGE_ARRAY_LEN>::sendMessage(){     // Method to send the message and update the lastSentTimestamp. Calling without arguments will output to Serial.
-    outputToSerial(HEX, HEX);
+    outputToSerial();
     updateTimestamp();
     return true;
 }
@@ -69,15 +69,15 @@ bool CANMessage<MESSAGE_ARRAY_LEN>::sendIfReady(){     // Integrated method to c
 }
 
 template <int MESSAGE_ARRAY_LEN>
-bool CANMessage<MESSAGE_ARRAY_LEN>::outputToSerial(int idFormat = HEX, int dataFormat = HEX){     // Method output to Serial, takes arguments for displayed format of id and data
-    if(idFormat != BIN || idFormat != OCT || idFormat != DEC || idFormat != HEX){
-        return false;
+bool CANMessage<MESSAGE_ARRAY_LEN>::outputToSerial(int idFormat, int dataFormat){     // Method output to Serial, takes arguments for displayed format of id and data
+    if(idFormat != BIN && idFormat != OCT && idFormat != DEC && idFormat != HEX){
+        idFormat = HEX;
     }
-    if(dataFormat != BIN || dataFormat != OCT || dataFormat != DEC || dataFormat != HEX){
-        return false;
+    if(dataFormat != BIN && dataFormat != OCT && dataFormat != DEC && dataFormat != HEX){
+        dataFormat = HEX;
     }
     Serial.print(CANID, idFormat);
-    for(int i = 0; i <= messageLength; i++){
+    for(int i = 0; i < messageLength; i++){
         Serial.print(" ");
         Serial.print(message[i], dataFormat);
     }
