@@ -2,7 +2,7 @@
   
 ## instantiation:  
 **CANMessage<8> CAN_0B8(0x0B8, 1000);**  
-Specify the number of message bytes in the <template> for the constructor. Valid values are ints 0-8.  
+Specify the number of message bytes in the \<template> for the constructor. Valid values are ints 0-8.  
 First Argument is the CAN ID  
 Second Argument is the sending interval in ms.  
   
@@ -19,6 +19,7 @@ Second Argument is the sending interval in ms.
 **sendMessage():** sends the message, Calling without arguments will log to serial port, or can accept an instance of mcp2515_can CAN interface to send on. Updates the lastSentTimestamp.  
 **outputToSerial(int idFormat = HEX, int dataFormat = HEX):** log the message to an open serial output. Formating of the ID and message data are customiseable. Calling this method does not update the lastSentTimestamp.  
 **updateTimestamp:** updates the lastSentTimestamp to current value of millis().  
+
 
 
 
