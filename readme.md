@@ -1,4 +1,4 @@
-# CAN_Message_Arduino is a simple helper library to make sending CAN bus message easy.  
+# CANMessage is a simple helper library to make sending CAN bus message easy.  
   
 ## instantiation:  
 **CANMessage<8> CAN_0B8(0x0B8, 1000);**  
@@ -19,6 +19,7 @@ Second Argument is the sending interval in ms.
 **sendMessage():** sends the message, Calling without arguments will log to serial port, or can accept an instance of mcp2515_can CAN interface to send on. Updates the lastSentTimestamp.  
 **outputToSerial(int idFormat = HEX, int dataFormat = HEX):** log the message to an open serial output. Formating of the ID and message data are customiseable. Calling this method does not update the lastSentTimestamp.  
 **updateTimestamp:** updates the lastSentTimestamp to current value of millis().  
+
 
 
 
