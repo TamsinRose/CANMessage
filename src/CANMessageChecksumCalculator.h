@@ -26,7 +26,7 @@ class CANMessageChecksumCalculatorDefault : public CANMessageChecksumCalculator{
 };
 
 
-class CANMessageChecksumCalculator8BitSumIncID : public CANMessageChecksumCalculatorDefault{
+class CANMessageChecksumCalculator8BitSumIncID : public CANMessageChecksumCalculator{
     public:
         CANMessageChecksumCalculator8BitSumIncID(int bitPos = 0) {
             checksumStartBit = bitPos;
@@ -37,7 +37,7 @@ class CANMessageChecksumCalculator8BitSumIncID : public CANMessageChecksumCalcul
         byte * calculateChecksum(unsigned long ID, byte *message, int messageLength);
 };
 
-class CANMessageChecksumCalculator8BitSumNoID : public CANMessageChecksumCalculatorDefault{
+class CANMessageChecksumCalculator8BitSumNoID : public CANMessageChecksumCalculator{
     public:
         CANMessageChecksumCalculator8BitSumNoID(int bitPos = 0) {
             checksumStartBit = bitPos;
@@ -48,7 +48,7 @@ class CANMessageChecksumCalculator8BitSumNoID : public CANMessageChecksumCalcula
         byte * calculateChecksum(unsigned long ID, byte *message, int messageLength);
 };
 
-class CANMessageChecksumCalculator4BitSumIncID : public CANMessageChecksumCalculatorDefault{
+class CANMessageChecksumCalculator4BitSumIncID : public CANMessageChecksumCalculator{
     public:
         CANMessageChecksumCalculator4BitSumIncID(int bitPos = 0) {
             checksumStartBit = bitPos;
@@ -59,9 +59,42 @@ class CANMessageChecksumCalculator4BitSumIncID : public CANMessageChecksumCalcul
         byte * calculateChecksum(unsigned long ID, byte *message, int messageLength);
 };
 
-class CANMessageChecksumCalculator4BitSumNoID : public CANMessageChecksumCalculatorDefault{
+class CANMessageChecksumCalculator4BitSumNoID : public CANMessageChecksumCalculator{
     public:
         CANMessageChecksumCalculator4BitSumNoID(int bitPos = 0) {
+            checksumStartBit = bitPos;
+            for(int i = 0; i < 8; i++){
+                messageHolder[i] = 0;
+            }
+        };
+        byte * calculateChecksum(unsigned long ID, byte *message, int messageLength);
+};
+
+class CANMessageChecksumCalculatorJ1939RuleC : public CANMessageChecksumCalculator{
+    public:
+        CANMessageChecksumCalculatorJ1939RuleC(int bitPos = 0) {
+            checksumStartBit = bitPos;
+            for(int i = 0; i < 8; i++){
+                messageHolder[i] = 0;
+            }
+        };
+        byte * calculateChecksum(unsigned long ID, byte *message, int messageLength);
+};
+
+class CANMessageChecksumCalculatorJ1939RuleD : public CANMessageChecksumCalculator{
+    public:
+        CANMessageChecksumCalculatorJ1939RuleD(int bitPos = 0) {
+            checksumStartBit = bitPos;
+            for(int i = 0; i < 8; i++){
+                messageHolder[i] = 0;
+            }
+        };
+        byte * calculateChecksum(unsigned long ID, byte *message, int messageLength);
+};
+
+class CANMessageChecksumCalculatorJ1939RuleE : public CANMessageChecksumCalculator{
+    public:
+        CANMessageChecksumCalculatorJ1939RuleE(int bitPos = 0) {
             checksumStartBit = bitPos;
             for(int i = 0; i < 8; i++){
                 messageHolder[i] = 0;
