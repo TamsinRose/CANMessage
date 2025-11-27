@@ -25,7 +25,6 @@ checksumService{checksumCalculator}{
 template <int MESSAGE_ARRAY_LEN>
 CANMessage<MESSAGE_ARRAY_LEN>::CANMessage(unsigned long id, int freq)
 {                   
-    //checksumService = CANMessageChecksumCalculatorDefault();
     counter[0] = SimpleCounter();
     counter[1] = SimpleCounter();
     CANID = id;
