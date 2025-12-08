@@ -4,10 +4,15 @@
 
 #include "CANMessage.h"
 
+CANMessageSenderSerialPrint CANPrintToSerialDefault;
+CANMessageChecksumCalculatorDefault CANChecksumServiceDefault;
+
 // Constructor, set the CAN ID and sending frequency. Message length determined from Template value MESSAGE_ARRAY_LEN
+// Including an instance of sender service
 // Including an instance of checksum calulating service
 template <int MESSAGE_ARRAY_LEN>
-CANMessage<MESSAGE_ARRAY_LEN>::CANMessage(unsigned long id, int freq, CANMessageChecksumCalculator& checksumCalculator):
+CANMessage<MESSAGE_ARRAY_LEN>::CANMessage(unsigned long id, int freq, CANMessageSender& sender, CANMessageChecksumCalculator& checksumCalculator):
+senderService{sender},
 checksumService{checksumCalculator}{                   
     counter[0] = SimpleCounter();
     counter[1] = SimpleCounter();
@@ -18,13 +23,18 @@ checksumService{checksumCalculator}{
         message[i] = 0;
     }
     lastSentTimestamp = 0;
+    hasSenderService = true;
     hasChecksum = true;
 }
 
+
+
 // Constructor, set the CAN ID and sending frequency. Message length determined from Template value MESSAGE_ARRAY_LEN
+// Including an instance of sender service
 template <int MESSAGE_ARRAY_LEN>
-CANMessage<MESSAGE_ARRAY_LEN>::CANMessage(unsigned long id, int freq)
-{                   
+CANMessage<MESSAGE_ARRAY_LEN>::CANMessage(unsigned long id, int freq, CANMessageSender& sender):
+senderService{sender},
+checksumService{CANChecksumServiceDefault}{                   
     counter[0] = SimpleCounter();
     counter[1] = SimpleCounter();
     CANID = id;
@@ -34,6 +44,47 @@ CANMessage<MESSAGE_ARRAY_LEN>::CANMessage(unsigned long id, int freq)
         message[i] = 0;
     }
     lastSentTimestamp = 0;
+    hasSenderService = true;
+    hasChecksum = false;
+}
+
+// Constructor, set the CAN ID and sending frequency. Message length determined from Template value MESSAGE_ARRAY_LEN
+// Including an instance of checksum calulating service
+template <int MESSAGE_ARRAY_LEN>
+CANMessage<MESSAGE_ARRAY_LEN>::CANMessage(unsigned long id, int freq, CANMessageChecksumCalculator& checksumCalculator):
+senderService{CANPrintToSerialDefault},
+checksumService{checksumCalculator}{                   
+    counter[0] = SimpleCounter();
+    counter[1] = SimpleCounter();
+    CANID = id;
+    sendingFrequency = freq;
+    messageLength = MESSAGE_ARRAY_LEN;
+    for(int i = 0; i < messageLength; i++){
+        message[i] = 0;
+    }
+    lastSentTimestamp = 0;
+    hasSenderService = false;
+    hasChecksum = true;
+}
+
+// Constructor, set the CAN ID and sending frequency. Message length determined from Template value MESSAGE_ARRAY_LEN
+template <int MESSAGE_ARRAY_LEN>
+CANMessage<MESSAGE_ARRAY_LEN>::CANMessage(unsigned long id, int freq):
+senderService{CANPrintToSerialDefault},
+checksumService{CANChecksumServiceDefault}
+{                   
+    //senderService = CANMessageSenderSerialPrint();
+    //checksumService = CANMessageChecksumCalculatorDefault();
+    counter[0] = SimpleCounter();
+    counter[1] = SimpleCounter();
+    CANID = id;
+    sendingFrequency = freq;
+    messageLength = MESSAGE_ARRAY_LEN;
+    for(int i = 0; i < messageLength; i++){
+        message[i] = 0;
+    }
+    lastSentTimestamp = 0;
+    hasSenderService = false;
     hasChecksum = false;
 }
 
@@ -63,39 +114,22 @@ bool CANMessage<MESSAGE_ARRAY_LEN>::shouldSend(){
     }
 }
 
-// Method to send the message and update the lastSentTimestamp, must include an mcp2525_can interface object to send the message 
-template <int MESSAGE_ARRAY_LEN>
-bool CANMessage<MESSAGE_ARRAY_LEN>::sendMessage(mcp2515_can CANInterface){     
-    updateChecksum();
-    CANInterface.sendMsgBuf(CANID, 0, messageLength, message);
-    updateTimestamp();
-    updateCounters();
-    return true;
-}
-
-// Integrated method to check the timestamp, send if ready, update the timestamp
-template <int MESSAGE_ARRAY_LEN>
-bool CANMessage<MESSAGE_ARRAY_LEN>::sendIfReady(mcp2515_can CANInterface){     
-    if(shouldSend()){
-        sendMessage(CANInterface);
-        return true;
-    }
-    else{
-        return false;
-    }
-}
-
-// Method to send the message and update the lastSentTimestamp. Calling without arguments will output to Serial. template <int MESSAGE_ARRAY_LEN>
+// Method to upadte checksum, send the message and update the lastSentTimestamp. 
 template <int MESSAGE_ARRAY_LEN>
 bool CANMessage<MESSAGE_ARRAY_LEN>::sendMessage(){    
     updateChecksum();
-    outputToSerial();
+    if(hasSenderService){
+        senderService.send(CANID, message, messageLength);
+    }
+    else{
+        outputToSerial(HEX, HEX);
+    }
     updateTimestamp();
     updateCounters();
     return true;
 }
 
-// Integrated method to check the timestamp, send if ready, update the timestamp. Calling without arguments will output to Serial.
+// Integrated method to check the timestamp, sendMessage() if ready.
 template <int MESSAGE_ARRAY_LEN>
 bool CANMessage<MESSAGE_ARRAY_LEN>::sendIfReady(){     
     if(shouldSend()){
@@ -116,18 +150,38 @@ bool CANMessage<MESSAGE_ARRAY_LEN>::outputToSerial(int idFormat, int dataFormat)
     if(dataFormat != BIN && dataFormat != OCT && dataFormat != DEC && dataFormat != HEX){
         dataFormat = HEX;
     }
-    Serial.print(CANID, idFormat);
+    if(dataFormat == HEX){
+        Serial.print(CANID, HEX);
+        for(int i = 0; i < messageLength; i++){
+            Serial.print(" ");
+            if(message[i] == 0){
+                Serial.print("00");
+            }
+            else if(message[i] < 0x10){
+                Serial.print("0");
+                Serial.print(message[i], HEX);
+            }
+            else{
+                Serial.print(message[i], HEX);
+            }
+            
+        }
+        Serial.println();
+    }
+    else{
+        Serial.print(CANID, idFormat);
     for(int i = 0; i < messageLength; i++){
         Serial.print(" ");
         Serial.print(message[i], dataFormat);
     }
     Serial.println();
+    }
     return true;
 }
 
 // Method to setup the internal counters
 template <int MESSAGE_ARRAY_LEN>
-bool CANMessage<MESSAGE_ARRAY_LEN>::setCounter(int counterId = 0, int startVal = 0, unsigned long maxVal = 14, int step = 1,int incAt = 1){   
+bool CANMessage<MESSAGE_ARRAY_LEN>::setCounter(int counterId, int startVal, unsigned long maxVal, int step,int incAt){   
     if(counterId > (sizeof(counter) / sizeof(counter[0]))-1 || counterId < 0){
         return false;
     }
@@ -139,7 +193,7 @@ bool CANMessage<MESSAGE_ARRAY_LEN>::setCounter(int counterId = 0, int startVal =
 template <int MESSAGE_ARRAY_LEN>
 bool CANMessage<MESSAGE_ARRAY_LEN>::updateChecksum(){   
     if(hasChecksum){
-        byte * checksumAdjustedMessage = checksumService.calculateChecksum(CANID, message, messageLength);;
+        uint8_t * checksumAdjustedMessage = checksumService.calculateChecksum(CANID, message, messageLength);;
         for(int i = 0; i < messageLength; i++){
             message[i] = checksumAdjustedMessage[i];
         }

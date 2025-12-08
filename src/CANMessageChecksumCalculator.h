@@ -1,17 +1,18 @@
 /******************************************************************************
-// Define the CANMessageChecksumCalculatot class
+// Define the CANMessageChecksumCalculator class
+// Further checksum types and calculations can be defined by inheriting from the base CANMessageChecksumCalculator class
 ******************************************************************************/
 #ifndef CAN_MESSAGE_CHECKSUM_CALCULATOR_HEADER_FILE
 #define CAN_MESSAGE_CHECKSUM_CALCULATOR_HEADER_FILE
 
-#include "Arduino.h"
+#include <Arduino.h>
 
 class CANMessageChecksumCalculator{
     public:
         int checksumStartBit;
-        byte messageHolder[8];
+        uint8_t messageHolder[8];
         CANMessageChecksumCalculator(int bitPos = 0) {};
-        virtual byte * calculateChecksum(unsigned long ID, byte *message, int messageLength);
+        virtual uint8_t * calculateChecksum(unsigned long ID, uint8_t *message, int messageLength);
 };
 
 class CANMessageChecksumCalculatorDefault : public CANMessageChecksumCalculator{
@@ -22,7 +23,7 @@ class CANMessageChecksumCalculatorDefault : public CANMessageChecksumCalculator{
                 messageHolder[i] = 0;
             }
         };
-        byte * calculateChecksum(unsigned long ID, byte *message, int messageLength);
+        uint8_t * calculateChecksum(unsigned long ID, uint8_t *message, int messageLength);
 };
 
 
@@ -34,7 +35,7 @@ class CANMessageChecksumCalculator8BitSumIncID : public CANMessageChecksumCalcul
                 messageHolder[i] = 0;
             }
         };
-        byte * calculateChecksum(unsigned long ID, byte *message, int messageLength);
+        uint8_t * calculateChecksum(unsigned long ID, uint8_t *message, int messageLength);
 };
 
 class CANMessageChecksumCalculator8BitSumNoID : public CANMessageChecksumCalculator{
@@ -45,7 +46,7 @@ class CANMessageChecksumCalculator8BitSumNoID : public CANMessageChecksumCalcula
                 messageHolder[i] = 0;
             }
         };
-        byte * calculateChecksum(unsigned long ID, byte *message, int messageLength);
+        uint8_t * calculateChecksum(unsigned long ID, uint8_t *message, int messageLength);
 };
 
 class CANMessageChecksumCalculator4BitSumIncID : public CANMessageChecksumCalculator{
@@ -56,7 +57,7 @@ class CANMessageChecksumCalculator4BitSumIncID : public CANMessageChecksumCalcul
                 messageHolder[i] = 0;
             }
         };
-        byte * calculateChecksum(unsigned long ID, byte *message, int messageLength);
+        uint8_t * calculateChecksum(unsigned long ID, uint8_t *message, int messageLength);
 };
 
 class CANMessageChecksumCalculator4BitSumNoID : public CANMessageChecksumCalculator{
@@ -67,7 +68,7 @@ class CANMessageChecksumCalculator4BitSumNoID : public CANMessageChecksumCalcula
                 messageHolder[i] = 0;
             }
         };
-        byte * calculateChecksum(unsigned long ID, byte *message, int messageLength);
+        uint8_t * calculateChecksum(unsigned long ID, uint8_t *message, int messageLength);
 };
 
 class CANMessageChecksumCalculatorJ1939RuleC : public CANMessageChecksumCalculator{
@@ -78,7 +79,7 @@ class CANMessageChecksumCalculatorJ1939RuleC : public CANMessageChecksumCalculat
                 messageHolder[i] = 0;
             }
         };
-        byte * calculateChecksum(unsigned long ID, byte *message, int messageLength);
+        uint8_t * calculateChecksum(unsigned long ID, uint8_t *message, int messageLength);
 };
 
 class CANMessageChecksumCalculatorJ1939RuleD : public CANMessageChecksumCalculator{
@@ -89,7 +90,7 @@ class CANMessageChecksumCalculatorJ1939RuleD : public CANMessageChecksumCalculat
                 messageHolder[i] = 0;
             }
         };
-        byte * calculateChecksum(unsigned long ID, byte *message, int messageLength);
+        uint8_t * calculateChecksum(unsigned long ID, uint8_t *message, int messageLength);
 };
 
 class CANMessageChecksumCalculatorJ1939RuleE : public CANMessageChecksumCalculator{
@@ -100,7 +101,7 @@ class CANMessageChecksumCalculatorJ1939RuleE : public CANMessageChecksumCalculat
                 messageHolder[i] = 0;
             }
         };
-        byte * calculateChecksum(unsigned long ID, byte *message, int messageLength);
+        uint8_t * calculateChecksum(unsigned long ID, uint8_t *message, int messageLength);
 };
 
 #endif //CAN_MESSAGE_CHECKSUM_CALCULATOR_HEADER_FILE

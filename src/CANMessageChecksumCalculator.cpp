@@ -1,14 +1,14 @@
 #include "CANMessageChecksumCalculator.h"
 
 
-byte * CANMessageChecksumCalculatorDefault:: calculateChecksum(unsigned long ID, byte *message, int messageLength){
+uint8_t * CANMessageChecksumCalculatorDefault:: calculateChecksum(unsigned long ID, uint8_t *message, int messageLength){
     for(int i = 0; i < 8 ; i ++){
         messageHolder[i] = message[i];
     }
     return messageHolder;
 }
 
-byte * CANMessageChecksumCalculator8BitSumIncID:: calculateChecksum(unsigned long ID, byte *message, int messageLength){
+uint8_t * CANMessageChecksumCalculator8BitSumIncID:: calculateChecksum(unsigned long ID, uint8_t *message, int messageLength){
     int checksumBits = 8;
     int checksum = 0;
     for(int i = 0; i < 8 ; i ++){
@@ -25,7 +25,7 @@ byte * CANMessageChecksumCalculator8BitSumIncID:: calculateChecksum(unsigned lon
     return messageHolder;
 }
 
-byte * CANMessageChecksumCalculator8BitSumNoID:: calculateChecksum(unsigned long ID, byte *message, int messageLength){
+uint8_t * CANMessageChecksumCalculator8BitSumNoID:: calculateChecksum(unsigned long ID, uint8_t *message, int messageLength){
     int checksumBits = 8;
     int checksum = 0;
     for(int i = 0; i < 8 ; i ++){
@@ -42,7 +42,7 @@ byte * CANMessageChecksumCalculator8BitSumNoID:: calculateChecksum(unsigned long
     return messageHolder;
 }
 
-byte * CANMessageChecksumCalculator4BitSumIncID:: calculateChecksum(unsigned long ID, byte *message, int messageLength){
+uint8_t * CANMessageChecksumCalculator4BitSumIncID:: calculateChecksum(unsigned long ID, uint8_t *message, int messageLength){
     int checksumBits = 4;
     int checksum = 0;
     for(int i = 0; i < 8 ; i ++){
@@ -68,7 +68,7 @@ byte * CANMessageChecksumCalculator4BitSumIncID:: calculateChecksum(unsigned lon
     return messageHolder;
 }
 
-byte * CANMessageChecksumCalculator4BitSumNoID:: calculateChecksum(unsigned long ID, byte *message, int messageLength){
+uint8_t * CANMessageChecksumCalculator4BitSumNoID:: calculateChecksum(unsigned long ID, uint8_t *message, int messageLength){
     int checksumBits = 4;
     int checksum = 0;
     for(int i = 0; i < 8 ; i ++){
@@ -94,7 +94,7 @@ byte * CANMessageChecksumCalculator4BitSumNoID:: calculateChecksum(unsigned long
     return messageHolder;
 }
 
-byte * CANMessageChecksumCalculatorJ1939RuleC:: calculateChecksum(unsigned long ID, byte *message, int messageLength){
+uint8_t * CANMessageChecksumCalculatorJ1939RuleC:: calculateChecksum(unsigned long ID, uint8_t *message, int messageLength){
     int checksumBits = 4;
     int checksum = 0;
     for(int i = 0; i < 8 ; i ++){
@@ -122,7 +122,7 @@ byte * CANMessageChecksumCalculatorJ1939RuleC:: calculateChecksum(unsigned long 
     return messageHolder;
 }
 
-byte * CANMessageChecksumCalculatorJ1939RuleD:: calculateChecksum(unsigned long ID, byte *message, int messageLength){
+uint8_t * CANMessageChecksumCalculatorJ1939RuleD:: calculateChecksum(unsigned long ID, uint8_t *message, int messageLength){
     int checksumBits = 4;
     int checksum = 0;
     for(int i = 0; i < 8 ; i ++){
@@ -142,7 +142,7 @@ byte * CANMessageChecksumCalculatorJ1939RuleD:: calculateChecksum(unsigned long 
     return messageHolder;
 }
 
-byte * CANMessageChecksumCalculatorJ1939RuleE:: calculateChecksum(unsigned long ID, byte *message, int messageLength){
+uint8_t * CANMessageChecksumCalculatorJ1939RuleE:: calculateChecksum(unsigned long ID, uint8_t *message, int messageLength){
     int checksumBits = 4;
     int checksum = 0;
     for(int i = 0; i < 8 ; i ++){
@@ -169,4 +169,6 @@ byte * CANMessageChecksumCalculatorJ1939RuleE:: calculateChecksum(unsigned long 
     }
     return messageHolder;
 }
+
+
 
